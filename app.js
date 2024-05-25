@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
-require('dotenv').config()
+require('dotenv').config();
 
 var env = process.env.NODE_ENV || 'default';
 var config = require('config');
@@ -21,14 +21,17 @@ require('./config/database')(app, mongoose);
 
 // Bootstrap models
 fs.readdirSync(__dirname + '/models').forEach(function (file) {
-    if (~file.indexOf('.js')) require(__dirname + '/models/' + file);
+  if (~file.indexOf('.js')) require(__dirname + '/models/' + file);
 });
 
 // cors middleware
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
 });
 
 // implement routes
@@ -50,13 +53,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('S3CRE7'));
 app.use(flash());
 
-app.use(session(
-    {
-        secret: 'S3CRE7-S3SSI0N',
-        saveUninitialized: true,
-        resave: true
-    }
-));
+app.use(
+  session({
+    secret: 'S3CRE7-S3SSI0N',
+    saveUninitialized: true,
+    resave: true,
+  })
+);
 
 app.use(express.static(path.join(__dirname, 'public')));
 require('./config/passport')(app, passport);
@@ -77,16 +80,20 @@ require('./config/errorHandlers.js')(app);
 var server;
 
 if (process.env.APP_ENV == 'development') {
-    server = require('http').createServer(app).listen(8050, function() {
-        console.log("server is listening on port 8050")
+  server = require('http')
+    .createServer(app)
+    .listen(8050, function () {
+      console.log('server is listening on port 8050');
     });
 } else {
-    var options = {
-        key: fs.readFileSync('./certs/file.pem'),
-        cert: fs.readFileSync('./certs/file.crt')
-    };
-    server = require('https').createServer(options, app).listen(8050, function() {
-        console.log("server is listening on the port 8050")
+  var options = {
+    key: fs.readFileSync('./certs/key.pem'),
+    cert: fs.readFileSync('./certs/file.crt'),
+  };
+  server = require('https')
+    .createServer(options, app)
+    .listen(8050, function () {
+      console.log('server is listening on the port 8050');
     });
 }
 
