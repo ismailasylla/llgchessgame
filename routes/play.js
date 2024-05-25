@@ -1,4 +1,5 @@
 var express = require('express');
+var util = require('../config/util.js');
 var router = express.Router();
 var contractService = require('../services/contractService.js');
 
